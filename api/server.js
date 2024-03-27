@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import userRoute from './routes/user.route.js'
+import { errorHandling } from './middlewares/errorHandling.middleware.js';
 dotenv.config()
 
 const app = express();
@@ -18,4 +19,6 @@ app.listen(PORT, () => {
 });
 
 app.use('/api/user', userRoute)
+
+app.use(errorHandling)
 
