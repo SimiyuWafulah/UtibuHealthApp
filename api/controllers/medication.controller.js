@@ -1,4 +1,5 @@
 import Medication from "../models/medication.model.js";
+import { updateInventory } from "./inventory.controller.js";
 
 
 //adding a new medication to the database
@@ -14,10 +15,14 @@ export const createMedication = async (req, res, next) => {
             expiryDate,
             manufacturer
         })
+        
+        //saves medication to db
         await newMedication.save()
-        res
-           .status(201)
-           .json('Medication added Successfully', newMedication)
+        
+        // Update inventory with the new medication
+        await updateInventory(newMedication._id, quantity);
+
+        res.status(201).json({ message: 'Medication added successfully', medication: newMedication });
     } catch (error) {
         next(error)
     }
