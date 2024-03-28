@@ -5,6 +5,7 @@ import userRoute from './routes/user.route.js'
 import authRoute from './routes/auth.route.js'
 import orderRoute from './routes/order.route.js'
 import inventoryRoute from './routes/inventory.route.js'
+import chronicDiseaseApiRoute from './chronicDiseasesApi.js'
 import { errorHandling } from './middlewares/errorHandling.middleware.js';
 dotenv.config()
 
@@ -27,6 +28,7 @@ app.use('/api/user', userRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/order',orderRoute);
 app.use('api/inventory',inventoryRoute);
+app.use('/api', chronicDiseaseApiRoute)
 
 app.use(errorHandling)
 
