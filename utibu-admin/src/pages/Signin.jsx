@@ -1,8 +1,47 @@
-import { Button, Label, TextInput } from 'flowbite-react'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { Button, Label, Spinner, TextInput } from 'flowbite-react'
+import React, { useState } from 'react'
+import { Link , useNavigate} from 'react-router-dom'
 
 export default function SignUp() {
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({})
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.id]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setError(null)
+      setLoading(true)
+      const res = await fetch('http://localhost:3000/api/auth/signin', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await res.json();
+      console.log(data)
+
+      if (data.success === false) {
+       setError(data.message,'Something went Wrong')
+       setLoading(false)
+       return
+      }
+      navigate('/')
+    } catch (error) {
+      setLoading(false)
+      setError(error.message)
+    }
+  }
+
   return (
     <div className='min-h-screen mt-20'>
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row gap-5'>
@@ -19,25 +58,34 @@ export default function SignUp() {
 
         {/*right*/}
         <div className='flex-1'>
-          <form className='flex flex-col gap-4'>
+          <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
             <div className=''>
               <Label value='Enter Email'/>
               <TextInput
                 type='email'
                 placeholder='example@gmail.com'
                 id='email'
+                onChange={handleChange}
               />
             </div>
             <div className=''>
               <Label value='Enter password'/>
               <TextInput
-                type='passoword'
+                type='password'
                 placeholder='*******'
                 id='password'
+                onChange={handleChange}
               />
             </div>
-            <Button gradientDuoTone='purpleToPink' type='submit'>
-              Sign In
+            <Button disabled={loading} gradientDuoTone='purpleToPink' type='submit'>
+              {loading ? (
+                  <>
+                    <Spinner className='sm'>
+                      <span className='pl-3'>Signing in...</span>
+                    </Spinner>
+                  </>
+              ) : 'Sign In'
+              }
             </Button>
           </form>
         </div>

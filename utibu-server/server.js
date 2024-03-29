@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
+import cors from 'cors'
 import userRoute from './routes/user.route.js'
 import authRoute from './routes/auth.route.js'
 import orderRoute from './routes/order.route.js'
@@ -15,6 +16,10 @@ const app = express();
 const PORT = process.env.PORT
 
 app.use(express.json())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 
 mongoose.connect(process.env.MONGO).then(() => {
     console.log('Connected to the database')
