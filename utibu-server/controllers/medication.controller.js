@@ -24,7 +24,6 @@ export const addMedicationsFromChronicDisease = async () => {
                 }
             }
         }
-        console.log("Medications added successfully");
     } catch (error) {
         console.error("Error adding medications:", error);
     }

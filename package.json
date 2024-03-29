@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon api/server.js",
-    "start": "node api/server.js"
+    "dev": "nodemon utibu-server/server.js",
+    "start": "node utibu server/server.js"
   },
   "keywords": [],
   "author": "kelvin simiyu",
