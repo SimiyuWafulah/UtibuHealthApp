@@ -1,12 +1,15 @@
 import { Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { Link , useNavigate} from 'react-router-dom'
+import {useDispatch,useSelector} from 'react-redux';
+import { signInStart, signInSuccess,signInFailure } from '../redux/user/user.slice';
 
-export default function SignUp() {
-  const navigate = useNavigate()
+export default function SignIn() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({})
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const {loading, error: error} = useSelector((state) => state.user)
+
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value })
@@ -14,9 +17,11 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!formData.email || !formData.password) {
+      return dispatch(signInFailure('Please Fill in all details'))
+    }
     try {
-      setError(null)
-      setLoading(true)
+      dispatch(signInStart())
       const res = await fetch('http://localhost:3000/api/auth/signin', {
         method: 'POST',
         mode: 'cors',
@@ -31,14 +36,19 @@ export default function SignUp() {
       console.log(data)
 
       if (data.success === false) {
-       setError(data.message,'Something went Wrong')
-       setLoading(false)
+       dispatch(signInFailure(data.message))
        return
       }
-      navigate('/')
+      dispatch(signInSuccess(data))
+      
+       // Redirect the user based on isAdmin status
+       if (data && data.isAdmin) {
+        navigate('/dashboard');
+      } else {
+        navigate('/download');
+      }
     } catch (error) {
-      setLoading(false)
-      setError(error.message)
+      dispatch(signInFailure(error.message))
     }
   }
 
